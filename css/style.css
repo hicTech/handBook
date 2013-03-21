@@ -13,8 +13,6 @@ body{
 	color: #fff;
 	display: none;
 	display: block\9; /* FOR IE */
-	
-	
 }
 
 
@@ -30,7 +28,6 @@ div .tabular-cell {display: table-cell;vertical-align: top; }
 	background-color: #222;
 	box-shadow: inset 0px 0px 76px rgba(0, 0, 0, 0.6);
 	border-bottom: solid 3px #18a6f8;
-
 }
 
 .slide{
@@ -38,7 +35,8 @@ div .tabular-cell {display: table-cell;vertical-align: top; }
 	height: auto\9; /* FOR IE */
 	background-repeat:no-repeat;
 	background-size: contain; 
-	background-position: center
+	background-position: center;
+	cursor: url('../img/cursor.png') 0 32, crosshair;
 }
 
 
