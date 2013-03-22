@@ -2,7 +2,7 @@
 <!-- saved from url=(0036)http://www.appml.org/talk/index.html -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">		
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<title>TM</title>
+<title>HandBook</title>
 <link rel="stylesheet" href="css/style.css">
 <script type="text/javascript" charset="utf-8" src="json.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/jquery.js"></script>
@@ -115,141 +115,117 @@
 			}
 		})
 		
+	
+		init(0);
 		
-		
-		
-		
-		
-	
-	init(0);
-	
-	function init(start_slide){
-		current_slide = start_slide;
-		$slides.hide();
-		$slide_info.hide();
-		$slide_info.eq(start_slide).show();
-		$slides.eq(start_slide).show();
-		
-	}
-	
-	
-	$(".forward").click(function(){
-		goForward();
-	});
-	
-	$(".back").click(function(){
-		goBack();
-	});
-	
-	$(".slide").click(function(){
-		goToFullScreen();
-	})
-	
-	$(document).keydown(function(event) {
-                switch (event.keyCode) {
-                    case 37: goBack(); break;
-                    case 38: goBack(); break;
-                    case 39: goForward(); break;
-                    case 40: goForward(); break;
-                    case 70: goToFullScreen(); break;
-                }
-            });
-	
-	function goForward(){
-		var $current_slide = getCurrentSlide();
-		var $current_slide_info = getCurrentSlideInfo();
-		if(current_slide != tot_slides_number-1){
-			(is_in_fullscreen)? goToFullScreen() : null;
-			$current_slide.hide();
-			$current_slide.next().show();
-			$current_slide_info.hide();
-			$current_slide_info.next().show();
-			current_slide++;
-			refreshNavigator(current_slide);
+		function init(start_slide){
+			current_slide = start_slide;
+			$slides.hide();
+			$slide_info.hide();
+			$slide_info.eq(start_slide).show();
+			$slides.eq(start_slide).show();
+			
 		}
-	}
+		
 	
-	function goBack(){
-		if(current_slide != 0){
-			(is_in_fullscreen)? goToFullScreen() : null;
+		$(".forward").click(function(){
+			goForward();
+		});
+		
+		$(".back").click(function(){
+			goBack();
+		});
+		
+		$(".slide").click(function(){
+			goToFullScreen();
+		})
+	
+		$(document).keydown(function(event) {
+            switch (event.keyCode) {
+                case 37: goBack(); break;
+                case 38: goBack(); break;
+                case 39: goForward(); break;
+                case 40: goForward(); break;
+                case 70: goToFullScreen(); break;
+            }
+        });
+	
+		function goForward(){
+			var $current_slide = getCurrentSlide();
+			var $current_slide_info = getCurrentSlideInfo();
+			if(current_slide != tot_slides_number-1){
+				(is_in_fullscreen)? goToFullScreen() : null;
+				$current_slide.hide();
+				$current_slide.next().show();
+				$current_slide_info.hide();
+				$current_slide_info.next().show();
+				current_slide++;
+				refreshNavigator(current_slide);
+			}
+		}
+	
+		function goBack(){
+			if(current_slide != 0){
+				(is_in_fullscreen)? goToFullScreen() : null;
+				var $current_slide = getCurrentSlide();
+				var $current_slide_info = getCurrentSlideInfo();
+				$current_slide.hide();
+				$current_slide.prev().show();
+				$current_slide_info.hide();
+				$current_slide_info.prev().show();
+				current_slide--;
+				refreshNavigator(current_slide);
+			}
+		}
+	
+		function goTo(index){
 			var $current_slide = getCurrentSlide();
 			var $current_slide_info = getCurrentSlideInfo();
 			$current_slide.hide();
-			$current_slide.prev().show();
+			$slides.eq(index).show();
 			$current_slide_info.hide();
-			$current_slide_info.prev().show();
-			current_slide--;
+			$slide_info.eq(index).show();
+			current_slide = index;
 			refreshNavigator(current_slide);
 		}
-	}
-	
-	function goTo(index){
-		var $current_slide = getCurrentSlide();
-		var $current_slide_info = getCurrentSlideInfo();
-		$current_slide.hide();
-		$slides.eq(index).show();
-		$current_slide_info.hide();
-		$slide_info.eq(index).show();
-		current_slide = index;
-		refreshNavigator(current_slide);
-	}
 	
 	
-	
-	function getCurrentSlide(){
-		return $slides.eq(current_slide);
-	}
-	
-	function getCurrentSlideInfo(){
-		return $slide_info.eq(current_slide);
-	}
-	
-	function getCurrentScreenshot(){
-		return $(getCurrentSlide()).find(".screenshot");
-	}
-	
-	function goToFullScreen(){
-		var $screenshot = getCurrentScreenshot();
-		var initial_padding = json_conf.init_padding;
-		var full_padding = json_conf.full_padding;
-		
-		if(!is_in_fullscreen){
-			$("#navigator_container").hide();
-			$("#slide_info_container").hide();
-			$("#header_container").hide();
-			
-			is_in_fullscreen = true;
-		}
-		else{
-			
-				$("#navigator_container").show();
-				$("#slide_info_container").show();
-				$("#header_container").show();
-				
-				is_in_fullscreen = false;
-	
-			
+		function getCurrentSlide(){
+			return $slides.eq(current_slide);
 		}
 		
-	}
+		function getCurrentSlideInfo(){
+			return $slide_info.eq(current_slide);
+		}
+		
+		function getCurrentScreenshot(){
+			return $(getCurrentSlide()).find(".screenshot");
+		}
 	
+		function goToFullScreen(){
+			var $screenshot = getCurrentScreenshot();
+			var initial_padding = json_conf.init_padding;
+			var full_padding = json_conf.full_padding;
+			
+			if(!is_in_fullscreen){
+				$("#navigator_container").hide();
+				$("#slide_info_container").hide();
+				$("#header_container").hide();
+				is_in_fullscreen = true;
+			}
+			else{
+					$("#navigator_container").show();
+					$("#slide_info_container").show();
+					$("#header_container").show();
+					is_in_fullscreen = false;
+			}
+			
+		}
 	
-
-	
-	
-	
-	
-	
-	
-						
-	
-	
-	
-	
-	function refreshNavigator(index){
-		$navigator.find(".nav_item.current").removeClass("current");
-		$navigator.find(".nav_item").eq(index).addClass("current");
-	}
+		function refreshNavigator(index){
+			$navigator.find(".nav_item.current").removeClass("current");
+			$navigator.find(".nav_item").eq(index).addClass("current");
+		}
 	}
 	
 	
@@ -258,22 +234,8 @@
 
 <body style="overflow:hidden">
 	<div class="IE_message">Per visualizzare al meglio questo contenuto aprilo con Chrome, Firefox o Safari</div>
-	<div style="display:none">
-		<!-- <div class="arrow forward"></div> -->
-		
-		
-		
-		
-
-		<!--<div class="arrow back"></div> -->
-		
-	</div>
-	
 
 	<div style="overflow:hidden">
-		
-		
-		
 		
 		<!-- MODERN BROWSERS -->	
 		<div class="tabular" id="notIE">
@@ -304,9 +266,6 @@
     	    	</div>
        		</div>
 		</div>
-	
-	
-	
 		
 		<!-- IE BROWSER -->
 		<table id="IE" style="width:100%; height:100%" cellspacing="0" cellpadding="0" margintop="0px">
