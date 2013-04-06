@@ -30,6 +30,23 @@ div .tabular-cell {display: table-cell;vertical-align: top; }
 	border-bottom: solid 3px #18a6f8;
 }
 
+.handbookTitle{
+	width:100%;
+	text-align:center;
+	color:#18a6f8;
+	font-size:20px;
+	font-weight:bold;
+	padding-top: 10px;
+}
+
+.commands{
+	color:rgba(0,0,0,0.5);
+	font-size:11px;
+	width:100%;
+	text-align:right;
+	padding:20px 10px 0px 0px;
+}
+
 .slide{
 	height:100%;
 	height: auto\9; /* FOR IE */
