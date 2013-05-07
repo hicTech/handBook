@@ -22,19 +22,15 @@
 <script>
 
 	$(document).ready(function(){
-		var handbook_title = "Introduzione - Area Clinica";
+		var handbook_title = "Introduzione Generale all'interfaccia";
 		$(".handbookTitle").html(handbook_title);
 		populateSlides();	
-		
-	
-    
-    
 	});
 
 	function populateSlides(handbook_title){
 		$(document).ready(function(){
 			 hicGoogleDocsParser({
-				"url":"https://docs.google.com/spreadsheet/pub?key=0AjlzvjiyIeVzdHIyVldlc1lCQXpaZXR3YUN2ZDlJOVE&output=html",
+				"url":"https://docs.google.com/spreadsheet/pub?key=0AjlzvjiyIeVzdFRDZ2NMSlRsMUI1NlhtWW5kdkptMUE&output=html",
 				"callback":"printSlides",
 				"loadingTarget":"#slides_description",
 				"target" : "#slides_description"
