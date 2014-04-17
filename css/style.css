@@ -16,9 +16,9 @@ body{
 }
 
 
-div .tabular {display: table;width:100%; height: 100%}
-div .tabular-row {display: table-row; clear: both}
-div .tabular-cell {display: table-cell;vertical-align: top; }
+.tabular {display: table;width:100%; height: 100%}
+.tabular-row {display: table-row; clear: both}
+.tabular-cell {display: table-cell;vertical-align: top; }
 
 
 
@@ -59,7 +59,7 @@ div .tabular-cell {display: table-cell;vertical-align: top; }
 
 
 .slide-description-container{
-	height: 90px;
+	height: 100px;
 	width: 100%;
 	background-color: #222;
 	box-shadow: inset 0px 0px 76px rgba(0, 0, 0, 0.6);
@@ -85,6 +85,7 @@ div .tabular-cell {display: table-cell;vertical-align: top; }
 
 .slide-txt{
 	line-height: 21px;
+    font-size: 15px;
 }
 
 

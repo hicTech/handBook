@@ -12,295 +12,149 @@
 <script type="text/javascript" charset="utf-8" src="src/screen.js"></script>
 <script type="text/javascript" charset="utf-8" src="src/handbookCore.js"></script>
 <script type="text/javascript" src="lib/hicGoogleDocsParser.js"></script>
-
+<link rel="stylesheet" href="css/button/button.css">
 <!--[if lt IE 9]>
   <script type="text/javascript" src="lib/spinner/excanvas.min.js"></script>
 <![endif]-->
 
 <script type="text/javascript" src="lib/spinner/spinners.min.js"></script>
 
-<script>
-
-	$(document).ready(function(){
-		var handbook_title = "Introduzione Generale all'interfaccia";
-		$(".handbookTitle").html(handbook_title);
-		populateSlides();	
-	});
-
-	function populateSlides(handbook_title){
-		$(document).ready(function(){
-			 hicGoogleDocsParser({
-				"url":"https://docs.google.com/spreadsheet/pub?key=0AjlzvjiyIeVzdFRDZ2NMSlRsMUI1NlhtWW5kdkptMUE&output=html",
-				"callback":"printSlides",
-				"loadingTarget":"#slides_description",
-				"target" : "#slides_description"
-			});
-		});
+<style>
+	body{
+		font-family: Helvetica;
+		color: #555;
+		font-size: 16px;
+		text-shadow: -1px 1px 1px rgba(255,255,255,0.4);
 	}
 	
-	
-	function printSlides(result,opts){
-		
-		var ie = (navigator.userAgent.indexOf("MSIE") == -1) ? false : true;
-	
-		if(ie)
-			$("#notIE").remove()
-		else
-			$("#IE").remove();
-
-		
-		
-		/* slide description */
-		var ret = "";
-		_.each(result.trs,function(tr){
-			ret +='<div class="slide-description-content">'+
-					'<div class="slide-txt"><font class="slide-title">'+tr.title+': </font>'+tr.text+'</div>'+
-				'</div>';
-		});
-		$(opts.target).append(ret);
-		
-		
-		/* screenshot */
-		var ret = "";
-		if(!ie){
-			_.each(result.trs,function(tr){
-				ret +='<div class="slide" style="background-image:url('+tr.screenshot_url+')"></div>';
-			});
-		}
-		else{
-			_.each(result.trs,function(tr,index){
-				var IE_rule = "filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tr.screenshot_url+"',sizingMethod='scale');"+
-							"-ms-filter: 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+tr.screenshot_url+"',sizingMethod='scale');";
-
-				ret +='<div class="slide" style="background-image:url('+tr.screenshot_url+');width:850px;height:476px;'+ IE_rule +'"></div>';
-			});
-		}
-		
-		$("#slides").append(ret);
-		
-		
-		var $slides = $(".slide");
-		var $arrows = $(".arrow");
-		var $navigator = $(".navigator");
-		var $header = $(".header");
-		var $slide_info = $(".slide-description-content");
-		var start_slide = 0;
-		
-		var tot_slides_number = $slides.size();
-		var current_slide;
-		var is_in_fullscreen = false;
-		
-		
-		
-		
-		/* navigator */
-		var ret = "";
-		var index = 1;
-		_.each(result.trs,function(tr){
-			var current = (start_slide == index-1)? "current" : "";
-			ret +='<div class="nav_item '+current+'">'+
-						'<div class="nav_item_number">'+index+'</div>'+
-						'<div class="nav_item_txt_container">'+
-							'<div class="nav_item_txt">'+tr.title+'</div>'+
-						'</div>'+
-					'</div>';
-					
-			index++;
-		});
-		$navigator.append(ret);
-		
-		
-		$navigator.find(".nav_item").click(function(){
-			if(!$(this).is(".current")){
-				var index = $(this).index();
-				goTo(index);
-			}
-		})
-		
-	
-		init(0);
-		
-		function init(start_slide){
-			current_slide = start_slide;
-			$slides.hide();
-			$slide_info.hide();
-			$slide_info.eq(start_slide).show();
-			$slides.eq(start_slide).show();
-			
-		}
-		
-	
-		$(".forward").click(function(){
-			goForward();
-		});
-		
-		$(".back").click(function(){
-			goBack();
-		});
-		
-		$(".slide").click(function(){
-			goToFullScreen();
-		})
-	
-		$(document).keydown(function(event) {
-            switch (event.keyCode) {
-                case 37: goBack(); break;
-                case 38: goBack(); break;
-                case 39: goForward(); break;
-                case 40: goForward(); break;
-                case 70: goToFullScreen(); break;
-            }
-        });
-	
-		function goForward(){
-			var $current_slide = getCurrentSlide();
-			var $current_slide_info = getCurrentSlideInfo();
-			if(current_slide != tot_slides_number-1){
-				(is_in_fullscreen)? goToFullScreen() : null;
-				$current_slide.hide();
-				$current_slide.next().show();
-				$current_slide_info.hide();
-				$current_slide_info.next().show();
-				current_slide++;
-				refreshNavigator(current_slide);
-			}
-		}
-	
-		function goBack(){
-			if(current_slide != 0){
-				(is_in_fullscreen)? goToFullScreen() : null;
-				var $current_slide = getCurrentSlide();
-				var $current_slide_info = getCurrentSlideInfo();
-				$current_slide.hide();
-				$current_slide.prev().show();
-				$current_slide_info.hide();
-				$current_slide_info.prev().show();
-				current_slide--;
-				refreshNavigator(current_slide);
-			}
-		}
-	
-		function goTo(index){
-			var $current_slide = getCurrentSlide();
-			var $current_slide_info = getCurrentSlideInfo();
-			$current_slide.hide();
-			$slides.eq(index).show();
-			$current_slide_info.hide();
-			$slide_info.eq(index).show();
-			current_slide = index;
-			refreshNavigator(current_slide);
-		}
-	
-	
-		function getCurrentSlide(){
-			return $slides.eq(current_slide);
-		}
-		
-		function getCurrentSlideInfo(){
-			return $slide_info.eq(current_slide);
-		}
-		
-		function getCurrentScreenshot(){
-			return $(getCurrentSlide()).find(".screenshot");
-		}
-	
-		function goToFullScreen(){
-			var $screenshot = getCurrentScreenshot();
-			var initial_padding = json_conf.init_padding;
-			var full_padding = json_conf.full_padding;
-			
-			if(!is_in_fullscreen){
-				$("#navigator_container").hide();
-				$("#slide_info_container").hide();
-				$("#header_container").hide();
-				is_in_fullscreen = true;
-			}
-			else{
-					$("#navigator_container").show();
-					$("#slide_info_container").show();
-					$("#header_container").show();
-					is_in_fullscreen = false;
-			}
-			
-		}
-	
-		function refreshNavigator(index){
-			$navigator.find(".nav_item.current").removeClass("current");
-			$navigator.find(".nav_item").eq(index).addClass("current");
-		}
+	.tabular-cell{
+		vertical-align: middle;
+		text-align: center
 	}
 	
+	.tabular-cell{
+		border-bottom: dotted 1px #fff
+	}
 	
+	.rowDesc{
+		width: 35%;
+		background-color: #ccc;
+	}
 	
-</script>
+	.rowIcon{
+		width: 3%;
+		background-color: #444;
+	}
+	
+</style>
 
-<body style="overflow:hidden">
-	<div class="IE_message">Per visualizzare al meglio questo contenuto aprilo con Chrome, Firefox o Safari</div>
-
-	<div style="overflow:hidden">
+<body>
+	<div class="tabular">
 		
-		<!-- MODERN BROWSERS -->	
-		<div class="tabular" id="notIE">
-			<div class="tabular-row" style="height: 45px;" id="header_container">
-        		<div class="tabular-cell">
-        			<div class="header">
-        				<div class="handbookTitle"></div>
-        				<div class="commands">Usa le frecce (&larr; &uarr; &rarr; &darr;) per spostarti avanti ed indietro nelle slide e clicca sull'immagine per ingrandirla &nbsp;</div>
-        			</div>
-        		</div>
-        	</div>
-        	<div class="tabular-row">
-        		<div class="tabular-cell">
-        			<div class="tabular" style="padding:10px">
-						<div class="tabular-row">
-		        			<div class="tabular-cell" id="navigator_container" style="width:250px;overflow:auto">
-		        				<div class="navigator"></div> 
-		        			</div>
-				        	<div class="tabular-cell" style="padding:20px" id="slides">
-				        		
-				        	</div>
-				        </div>
-					</div>
-        		</div>
-        	</div>
-	 		<div class="tabular-row" style="height: 90px;" id="slide_info_container">
-    	    	<div class="tabular-cell">
-    	    		<div class="slide-description-container" id="slides_description">
-    	    			
-    	    		</div>
-    	    	</div>
-       		</div>
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"><img src="img/tm.png"></div>
+			<div class="tabular-cell rowDesc">
+				<div>Punti di forza</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div>
+                    <button class="BUTTON blue" onclick="location.href='screenshots/punti_di_forza/'">1</button>
+                </div>
+			</div>
 		</div>
 		
-		<!-- IE BROWSER -->
-		<table id="IE" style="width:100%; height:100%" cellspacing="0" cellpadding="0" margintop="0px">
-			<tr style="height:45px">
-				<td colspan="2">
-					<div class="header">
-        				<div class="handbookTitle"></div>
-        				<div class="commands">Usa le frecce (&larr; &uarr; &rarr; &darr;) per spostarti avanti ed indietro nelle slide e clicca sull'immagine per ingrandirla &nbsp;</div>
-        			</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div style="width:250px; height:100%; overflow:scroll"><div class="navigator"></div> </div>
-				</td>
-				<td>
-					<div  style="padding:20px" id="slides"></div>
-				</td>
-			</tr>
-			<tr style="height:90px">
-				<td colspan="2">
-					<div class="slide-description-container" id="slides_description">
-				</td>
-			</tr>
-		</table>
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"><img src="img/tm.png"></div>
+			<div class="tabular-cell rowDesc">
+				<div>Un'introduzione generale all'interfaccia di TransplantManager</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div><button class="BUTTON blue" onclick="location.href='screenshots/interfaccia_generale'">Introduzione interfaccia</button></div>
+			</div>
+		</div>
+		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"> <img src="img/clinica.png"> </div>
+			<div class="tabular-cell rowDesc">
+				<div>Area Clinica</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div>
+                    <button class="BUTTON blue" >Inserimento Scheda Clinica</button>
+                    <button class="BUTTON blue" onclick="location.href='screenshots/scheda_clinica'">Visuaizzazione Scheda Clinica</button>
+                </div>
+			</div>
+		</div>
+		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"> <img src="img/raccolta.png"> </div>
+			<div class="tabular-cell rowDesc">
+				<div>Area Raccolta</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div>
+					<button class="BUTTON  blue">Flusso Autologa HPC_A</button>
+					<button class="BUTTON  blue">Flusso Autologa HPC_M</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"> <img src="img/raccolta.png"> </div>
+			<div class="tabular-cell rowDesc">
+				<div> Area Processazione</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div>
+					<button class="BUTTON  blue">Flusso Allogenico HPC_A</button>
+					<button class="BUTTON  blue">Flusso Allogenico HPC_M</button>
+					<button class="BUTTON  blue">Flusso Allogenico TCT</button>
+				</div>
+			</div>
+		</div>
 		
 		
 		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"> <img src="img/stock.png"> </div>
+			<div class="tabular-cell rowDesc">
+				<div>Gestione Magazzino e Scorte</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div><button class="BUTTON blue">Magazzino</button></div>
+			</div>
+		</div>
 		
-	</div>
-				
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"> <img src="img/criopreservazione.png"> </div>
+			<div class="tabular-cell rowDesc">
+				<div>Gestione Stoccaggio e Criopreservazione Unità</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div><button class="BUTTON blue">Stoccaggio</button></div>
+			</div>
+		</div>
+		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"></div>
+			<div class="tabular-cell rowDesc">
+				<div>Gestione Documentale</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div><button class="BUTTON blue">Etichette</button><button class="BUTTON blue">Documenti</button></div>
+			</div>
+		</div>
+		
+		<div class="tabular-row">
+			<div class="tabular-cell rowIcon"></div>
+			<div class="tabular-cell rowDesc">
+				<div>Generazione Report</div>
+			</div>
+			<div class="tabular-cell" style="text-align:center">
+				<div><button class="BUTTON blue">I report Excell</button></div>
+			</div>
+		</div>
+			
+	</div>	
 </body>
 	
